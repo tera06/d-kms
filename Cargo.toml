@@ -4,3 +4,33 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+libp2p = { version = "0.52", features = [
+    "macros",
+    "mdns",
+    "noise",
+    "tcp",
+    "tokio",
+    "request-response",
+    "json",
+    "yamux",
+] }
+anyhow = "1.0"
+aes-gcm = "0.10"
+base64 = "0.22"
+clap = { version = "4.4", features = ["derive"] }
+env_logger = "0.10"
+hkdf = "0.12"
+hex = "0.4"
+log = "0.4"
+futures = "0.3"
+rand = "0.7"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sha2 = "0.10"
+sled = "0.34"
+threshold_crypto = { version = "0.4" }
+tokio = { version = "1.35", features = ["full"] }
+bincode = "1.3"
+chrono = { version = "0.4", features = ["serde"] }
+async-trait = "0.1"
+uuid = { version = "1", features = ["v4"] }
