@@ -1,28 +1,19 @@
 use std::env;
 
 use anyhow::Result;
-use clap::{Parser, Subcommand};
+use clap::Parser;
 
+use crate::app::runner;
 use crate::key::create_keys;
 use crate::network::{client_sign, start_server};
+use crate::ui::cli;
 
+mod app;
 mod encryption;
 mod key;
 mod network;
 mod types;
-#[derive(Parser)]
-#[command(name = "dkms")]
-struct Cli {
-    #[command(subcommand)]
-    cmd: Commands,
-}
-
-#[derive(Subcommand)]
-enum Commands {
-    Init { threshold: usize, n: usize },
-    Server { index: usize },
-    Client { message: String, threshold: usize },
-}
+mod ui;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -33,19 +24,11 @@ async fn main() -> Result<()> {
     }
     env_logger::init();
 
-    let cli = Cli::parse();
+    let cli = cli::Cli::parse();
 
-    match cli.cmd {
-        Commands::Init { threshold, n } => {
-            create_keys(threshold, n).await?;
-        }
-        Commands::Server { index } => {
-            start_server(index).await?;
-        }
-        Commands::Client { message, threshold } => {
-            client_sign(&message, threshold).await?;
-        }
-    }
+    let app_action = cli.cmd.into();
+
+    runner::AppRunner::run(app_action).await?;
 
     Ok(())
 }

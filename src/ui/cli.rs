@@ -1,15 +1,27 @@
 use clap::{Parser, Subcommand};
 
+use crate::app::runner::AppAction;
+
 #[derive(Parser)]
 #[command(name = "dkms")]
 pub struct Cli {
     #[command(subcommand)]
-    pub cmd: Commands,
+    pub cmd: Command,
 }
 
 #[derive(Subcommand)]
-enum Commands {
+pub enum Command {
     Init { threshold: usize, n: usize },
     Server { index: usize },
     Client { message: String, threshold: usize },
+}
+
+impl From<Command> for AppAction {
+    fn from(cmd: Command) -> Self {
+        match cmd {
+            Command::Init { threshold, n } => AppAction::Init { threshold, n },
+            Command::Server { index } => AppAction::Server { index },
+            Command::Client { message, threshold } => AppAction::Client { message, threshold },
+        }
+    }
 }
