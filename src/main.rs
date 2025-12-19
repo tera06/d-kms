@@ -4,11 +4,10 @@ use anyhow::Result;
 use clap::Parser;
 
 use crate::app::runner;
-use crate::key::create_keys;
-use crate::network::{client_sign, start_server};
 use crate::ui::cli;
 
 mod app;
+mod domain;
 mod encryption;
 mod key;
 mod network;
