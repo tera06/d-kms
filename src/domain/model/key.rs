@@ -1,5 +1,4 @@
-use crate::domain::model::error::{PublicKeyError, SecretKeyShareError};
-
+use crate::domain::model::signature::{Digest, Signature, SignatureShare};
 struct PublicKey<T> {
     public_key: T,
 }
@@ -8,19 +7,15 @@ struct SecretKeyShare<T> {
     index: usize,
     secret_key_share: T,
 }
-struct SignedData<T> {
-    data: T,
-}
-struct SignatureShare<T> {
-    signature_share: T,
-}
+trait Verifiable<T, U> {
+    type Error: std::error::Error;
 
+    fn verify(&self, signature: &Signature<T>, digest: &Digest<U>) -> Result<bool, Self::Error>;
+}
 trait Signable<T, U> {
-    fn sign(&self, data: &SignedData<T>) -> Result<SignatureShare<U>, SecretKeyShareError>;
-}
+    type Error: std::error::Error;
 
-trait Verifiable<T> {
-    fn verify(&self, signature_share: &SignatureShare<T>) -> Result<bool, PublicKeyError>;
+    fn sign(&self, digest: &Digest<T>) -> Result<SignatureShare<U>, Self::Error>;
 }
 
 impl<T> PublicKey<T> {
@@ -28,11 +23,11 @@ impl<T> PublicKey<T> {
         Self { public_key }
     }
 
-    fn verify<U>(&self, signature_share: &SignatureShare<U>) -> Result<bool, PublicKeyError>
+    fn verify<U, V>(&self, signature: &Signature<U>, digest: &Digest<V>) -> Result<bool, T::Error>
     where
-        T: Verifiable<U>,
+        T: Verifiable<U, V>,
     {
-        self.public_key.verify(signature_share)
+        self.public_key.verify(signature, digest)
     }
 }
 
@@ -44,16 +39,10 @@ impl<T> SecretKeyShare<T> {
         }
     }
 
-    fn sign<U, V>(&self, data: &SignedData<U>) -> Result<SignatureShare<V>, SecretKeyShareError>
+    fn sign<U, V>(&self, digest: &Digest<U>) -> Result<SignatureShare<V>, T::Error>
     where
         T: Signable<U, V>,
     {
-        self.secret_key_share.sign(&data)
-    }
-}
-
-impl<T> SignedData<T> {
-    fn new(data: T) -> Self {
-        Self { data }
+        self.secret_key_share.sign(&digest)
     }
 }
