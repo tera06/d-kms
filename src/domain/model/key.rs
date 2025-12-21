@@ -3,6 +3,11 @@ struct PublicKey<T> {
     public_key: T,
 }
 
+struct SecretKey<T> {
+    threshold: usize,
+    num_key_shares: usize,
+    secret_key: T,
+}
 struct SecretKeyShare<T> {
     index: usize,
     secret_key_share: T,
@@ -11,6 +16,11 @@ trait Verifiable<T, U> {
     type Error: std::error::Error;
 
     fn verify(&self, signature: &Signature<T>, digest: &Digest<U>) -> Result<bool, Self::Error>;
+}
+
+trait Divisible<T> {
+    type Error: std::error::Error;
+    fn divide(&self, num_divide: usize) -> Result<Vec<SecretKeyShare<T>>, Self::Error>;
 }
 trait Signable<T, U> {
     type Error: std::error::Error;
@@ -28,6 +38,15 @@ impl<T> PublicKey<T> {
         T: Verifiable<U, V>,
     {
         self.public_key.verify(signature, digest)
+    }
+}
+
+impl<T> SecretKey<T> {
+    fn divide<U>(&self) -> Result<Vec<SecretKeyShare<U>>, T::Error>
+    where
+        T: Divisible<U>,
+    {
+        self.secret_key.divide(self.num_key_shares)
     }
 }
 
