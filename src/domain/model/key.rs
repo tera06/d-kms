@@ -42,6 +42,17 @@ impl<T> PublicKey<T> {
 }
 
 impl<T> SecretKey<T> {
+    fn new(threshold: usize, num_key_shares: usize, secret_key: T) -> Option<Self> {
+        if threshold > num_key_shares {
+            return None;
+        }
+
+        Some(Self {
+            threshold,
+            num_key_shares,
+            secret_key,
+        })
+    }
     fn divide<U>(&self) -> Result<Vec<SecretKeyShare<U>>, T::Error>
     where
         T: Divisible<U>,
