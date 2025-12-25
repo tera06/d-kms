@@ -1,5 +1,5 @@
 use crate::domain::model::signature::{Digest, Signature, SignatureShare};
-struct PublicKey<T> {
+pub struct PublicKey<T> {
     public_key: T,
 }
 
@@ -8,7 +8,7 @@ struct SecretKey<T> {
     num_key_shares: usize,
     secret_key: T,
 }
-struct SecretKeyShare<T> {
+pub struct SecretKeyShare<T> {
     index: usize,
     secret_key_share: T,
 }
