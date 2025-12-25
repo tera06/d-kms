@@ -1,3 +1,5 @@
+use futures::future::Shared;
+
 use crate::domain::model::signature::{Digest, Signature, SignatureShare};
 pub struct PublicKey<T> {
     public_key: T,
@@ -28,6 +30,15 @@ trait Signable<T, U> {
     fn sign(&self, digest: &Digest<T>) -> Result<SignatureShare<U>, Self::Error>;
 }
 
+pub trait CombineSignatureShares<T, U> {
+    type Error: std::error::Error;
+
+    fn combine_signature_shares(
+        &self,
+        signature_shares: Vec<SignatureShare<T>>,
+    ) -> Result<Signature<U>, Self::Error>;
+}
+
 impl<T> PublicKey<T> {
     fn new(public_key: T) -> Self {
         Self { public_key }
@@ -38,6 +49,16 @@ impl<T> PublicKey<T> {
         T: Verifiable<U, V>,
     {
         self.public_key.verify(signature, digest)
+    }
+
+    pub fn combine_signature_shares<U, V>(
+        &self,
+        signature_shares: Vec<SignatureShare<U>>,
+    ) -> Result<Signature<V>, T::Error>
+    where
+        T: CombineSignatureShares<U, V>,
+    {
+        self.public_key.combine_signature_shares(signature_shares)
     }
 }
 
