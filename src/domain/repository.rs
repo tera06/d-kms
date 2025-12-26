@@ -1,1 +1,1 @@
-mod key_repository;
+pub mod key_repository;
