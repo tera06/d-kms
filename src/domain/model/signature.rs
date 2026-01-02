@@ -1,16 +1,16 @@
-pub(super) struct Digest<T> {
+pub struct Digest<T> {
     digest: T,
 }
-pub(super) struct SignatureShare<T> {
+pub struct SignatureShare<T> {
     signature_share: T,
 }
 
-pub(super) struct Signature<T> {
+pub struct Signature<T> {
     signature: T,
 }
 
 impl<T> Digest<T> {
-    fn new(digest: T) -> Self {
+    pub fn new(digest: T) -> Self {
         Self { digest }
     }
 }

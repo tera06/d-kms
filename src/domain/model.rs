@@ -1,2 +1,2 @@
 pub mod key;
-mod signature;
+pub mod signature;
