@@ -17,15 +17,15 @@ struct KeyService<T, U, V, W> {
 
 impl<T, U, V, W> KeyService<T, U, V, W>
 where
-    T: PublicKeyRepository<PublicKey = V::PublicKey>,
-    U: SecretKeyShareRepository<SecretKeyShare = <V::SecretKey as Divisible>::SecretKeyShare>,
+    T: PublicKeyRepository<TPublicKey = V::TPublicKey>,
+    U: SecretKeyShareRepository<SecretKeyShare = <V::TSecretKey as Divisible>::TSecretKeyShare>,
     V: GenerateKey,
-    W: GenerateDigest<Digest = <V::PublicKey as Verifiable>::Digest>,
-    V::SecretKey: Divisible,
-    V::PublicKey:
-        CombineSignatureShares<Signature = <V::PublicKey as Verifiable>::Signature> + Verifiable,
-    <V::SecretKey as Divisible>::SecretKeyShare:
-        Signable<Digest = <V::PublicKey as Verifiable>::Digest>,
+    W: GenerateDigest<TDigest = <V::TPublicKey as Verifiable>::TDigest>,
+    V::TSecretKey: Divisible,
+    V::TPublicKey:
+        CombineSignatureShares<TSignature = <V::TPublicKey as Verifiable>::TSignature> + Verifiable,
+    <V::TSecretKey as Divisible>::TSecretKeyShare:
+        Signable<TDigest = <V::TPublicKey as Verifiable>::TDigest>,
 {
     async fn init_keys(&self, threshold: usize, num_divide: usize) -> Result<(), KeyServiceError> {
         let (public_key, secret_key) = self
@@ -56,7 +56,9 @@ where
         message: &str,
         index: usize,
     ) -> Result<
-        SignatureShare<<<V::SecretKey as Divisible>::SecretKeyShare as Signable>::SignatureShare>,
+        SignatureShare<
+            <<V::TSecretKey as Divisible>::TSecretKeyShare as Signable>::TSignatureShare,
+        >,
         KeyServiceError,
     > {
         let secret_key_share = self
@@ -80,7 +82,7 @@ where
     async fn verify_signature(
         &self,
         signature_shares: &Vec<
-            SignatureShare<<V::PublicKey as CombineSignatureShares>::SignatureShare>,
+            SignatureShare<<V::TPublicKey as CombineSignatureShares>::TSignatureShare>,
         >,
         message: &str,
     ) -> Result<bool, KeyServiceError> {
@@ -139,20 +141,20 @@ enum KeyServiceError {
     #[error("Failed to verify signature")]
     FailedVerifySignature,
 }
-trait GenerateKey {
-    type Error: std::error::Error;
-    type PublicKey;
-    type SecretKey;
+pub trait GenerateKey {
+    type TError: std::error::Error;
+    type TPublicKey;
+    type TSecretKey;
     fn generate_keys(
         &self,
         threshold: usize,
         num_divide: usize,
-    ) -> Result<(PublicKey<Self::PublicKey>, SecretKey<Self::SecretKey>), Self::Error>;
+    ) -> Result<(PublicKey<Self::TPublicKey>, SecretKey<Self::TSecretKey>), Self::TError>;
 }
 
 trait GenerateDigest {
-    type Error: std::error::Error;
-    type Digest;
+    type TError: std::error::Error;
+    type TDigest;
 
-    fn generate_digest(&self, message: &str) -> Result<Digest<Self::Digest>, Self::Error>;
+    fn generate_digest(&self, message: &str) -> Result<Digest<Self::TDigest>, Self::TError>;
 }

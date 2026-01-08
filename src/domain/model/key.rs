@@ -15,45 +15,45 @@ pub struct SecretKeyShare<T> {
     secret_key_share: T,
 }
 pub trait Verifiable {
-    type Signature;
-    type Digest;
-    type Error: std::error::Error;
+    type TSignature;
+    type TDigest;
+    type TError: std::error::Error;
 
     fn verify(
         &self,
-        signature: &Signature<Self::Signature>,
-        digest: &Digest<Self::Digest>,
-    ) -> Result<bool, Self::Error>;
+        signature: &Signature<Self::TSignature>,
+        digest: &Digest<Self::TDigest>,
+    ) -> Result<bool, Self::TError>;
 }
 
 pub trait Divisible {
-    type SecretKeyShare;
-    type Error: std::error::Error;
+    type TSecretKeyShare;
+    type TError: std::error::Error;
     fn divide(
         &self,
         num_divide: usize,
-    ) -> Result<Vec<SecretKeyShare<Self::SecretKeyShare>>, Self::Error>;
+    ) -> Result<Vec<SecretKeyShare<Self::TSecretKeyShare>>, Self::TError>;
 }
 pub trait Signable {
-    type Digest;
-    type SignatureShare;
-    type Error: std::error::Error;
+    type TDigest;
+    type TSignatureShare;
+    type TError: std::error::Error;
 
     fn sign(
         &self,
-        digest: &Digest<Self::Digest>,
-    ) -> Result<SignatureShare<Self::SignatureShare>, Self::Error>;
+        digest: &Digest<Self::TDigest>,
+    ) -> Result<SignatureShare<Self::TSignatureShare>, Self::TError>;
 }
 
 pub trait CombineSignatureShares {
-    type SignatureShare;
-    type Signature;
-    type Error: std::error::Error;
+    type TSignatureShare;
+    type TSignature;
+    type TError: std::error::Error;
 
     fn combine_signature_shares(
         &self,
-        signature_shares: &Vec<SignatureShare<Self::SignatureShare>>,
-    ) -> Result<Signature<Self::Signature>, Self::Error>;
+        signature_shares: &Vec<SignatureShare<Self::TSignatureShare>>,
+    ) -> Result<Signature<Self::TSignature>, Self::TError>;
 }
 
 impl<T> PublicKey<T>
@@ -66,18 +66,18 @@ where
 
     pub fn verify(
         &self,
-        signature: &Signature<<T as Verifiable>::Signature>,
-        digest: &Digest<T::Digest>,
-    ) -> Result<bool, <T as Verifiable>::Error> {
+        signature: &Signature<<T as Verifiable>::TSignature>,
+        digest: &Digest<T::TDigest>,
+    ) -> Result<bool, <T as Verifiable>::TError> {
         self.public_key.verify(signature, digest)
     }
 
     pub fn combine_signature_shares(
         &self,
-        signature_shares: &Vec<SignatureShare<<T as CombineSignatureShares>::SignatureShare>>,
+        signature_shares: &Vec<SignatureShare<<T as CombineSignatureShares>::TSignatureShare>>,
     ) -> Result<
-        Signature<<T as CombineSignatureShares>::Signature>,
-        <T as CombineSignatureShares>::Error,
+        Signature<<T as CombineSignatureShares>::TSignature>,
+        <T as CombineSignatureShares>::TError,
     > {
         self.public_key.combine_signature_shares(signature_shares)
     }
@@ -98,7 +98,7 @@ where
             secret_key,
         })
     }
-    pub fn divide(&self) -> Result<Vec<SecretKeyShare<T::SecretKeyShare>>, T::Error> {
+    pub fn divide(&self) -> Result<Vec<SecretKeyShare<T::TSecretKeyShare>>, T::TError> {
         self.secret_key.divide(self.num_key_shares)
     }
 }
@@ -116,8 +116,8 @@ where
 
     pub fn sign(
         &self,
-        digest: &Digest<T::Digest>,
-    ) -> Result<SignatureShare<T::SignatureShare>, T::Error> {
+        digest: &Digest<T::TDigest>,
+    ) -> Result<SignatureShare<T::TSignatureShare>, T::TError> {
         self.secret_key_share.sign(&digest)
     }
 }

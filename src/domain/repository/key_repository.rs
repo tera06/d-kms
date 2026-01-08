@@ -1,10 +1,10 @@
 use crate::domain::model::key::{PublicKey, SecretKeyShare};
 
 pub trait PublicKeyRepository {
-    type PublicKey;
-    type Error: std::error::Error + Send + Sync + 'static;
-    async fn save(&self, public_key: &PublicKey<Self::PublicKey>) -> Result<(), Self::Error>;
-    async fn load(&self) -> Result<PublicKey<Self::PublicKey>, Self::Error>;
+    type TPublicKey;
+    type TError: std::error::Error + Send + Sync + 'static;
+    async fn save(&self, public_key: &PublicKey<Self::TPublicKey>) -> Result<(), Self::TError>;
+    async fn load(&self) -> Result<PublicKey<Self::TPublicKey>, Self::TError>;
 }
 
 pub trait SecretKeyShareRepository {
