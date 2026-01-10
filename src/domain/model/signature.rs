@@ -1,12 +1,13 @@
 pub struct Digest<T> {
-    digest: T,
+    pub digest: T,
 }
 pub struct SignatureShare<T> {
-    signature_share: T,
+    pub index: usize,
+    pub signature_share: T,
 }
 
 pub struct Signature<T> {
-    signature: T,
+    pub signature: T,
 }
 
 impl<T> Digest<T> {
@@ -16,13 +17,16 @@ impl<T> Digest<T> {
 }
 
 impl<T> SignatureShare<T> {
-    fn new(signature_share: T) -> Self {
-        Self { signature_share }
+    fn new(index: usize, signature_share: T) -> Self {
+        Self {
+            index,
+            signature_share,
+        }
     }
 }
 
 impl<T> Signature<T> {
-    fn new(signature: T) -> Self {
+    pub fn new(signature: T) -> Self {
         Self { signature }
     }
 }

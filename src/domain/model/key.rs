@@ -87,7 +87,7 @@ impl<T> SecretKey<T>
 where
     T: Divisible,
 {
-    fn new(threshold: usize, num_key_shares: usize, secret_key: T) -> Option<Self> {
+    pub fn new(threshold: usize, num_key_shares: usize, secret_key: T) -> Option<Self> {
         if threshold > num_key_shares {
             return None;
         }
