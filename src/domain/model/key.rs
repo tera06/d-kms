@@ -107,7 +107,7 @@ impl<T> SecretKeyShare<T>
 where
     T: Signable,
 {
-    fn new(index: usize, secret_key_share: T) -> Self {
+    pub fn new(index: usize, secret_key_share: T) -> Self {
         Self {
             index,
             secret_key_share,
