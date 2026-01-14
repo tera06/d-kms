@@ -41,6 +41,7 @@ pub trait Signable {
 
     fn sign(
         &self,
+        index: usize,
         digest: &Digest<Self::TDigest>,
     ) -> Result<SignatureShare<Self::TSignatureShare>, Self::TError>;
 }
@@ -118,6 +119,6 @@ where
         &self,
         digest: &Digest<T::TDigest>,
     ) -> Result<SignatureShare<T::TSignatureShare>, T::TError> {
-        self.secret_key_share.sign(&digest)
+        self.secret_key_share.sign(self.index, &digest)
     }
 }

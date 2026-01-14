@@ -17,7 +17,7 @@ impl<T> Digest<T> {
 }
 
 impl<T> SignatureShare<T> {
-    fn new(index: usize, signature_share: T) -> Self {
+    pub fn new(index: usize, signature_share: T) -> Self {
         Self {
             index,
             signature_share,
