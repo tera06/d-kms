@@ -1,5 +1,3 @@
-use futures::future::Shared;
-
 use crate::domain::model::signature::{Digest, Signature, SignatureShare};
 pub struct PublicKey<T> {
     public_key: T,

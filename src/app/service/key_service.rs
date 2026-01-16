@@ -152,7 +152,7 @@ pub trait GenerateKey {
     ) -> Result<(PublicKey<Self::TPublicKey>, SecretKey<Self::TSecretKey>), Self::TError>;
 }
 
-trait GenerateDigest {
+pub trait GenerateDigest {
     type TError: std::error::Error;
     type TDigest;
 
