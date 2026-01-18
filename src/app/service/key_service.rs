@@ -18,7 +18,7 @@ struct KeyService<T, U, V, W> {
 impl<T, U, V, W> KeyService<T, U, V, W>
 where
     T: PublicKeyStore<TPublicKey = V::TPublicKey>,
-    U: SecretKeyShareStore<SecretKeyShare = <V::TSecretKey as Divisible>::TSecretKeyShare>,
+    U: SecretKeyShareStore<TSecretKeyShare = <V::TSecretKey as Divisible>::TSecretKeyShare>,
     V: GenerateKey,
     W: GenerateDigest<TDigest = <V::TPublicKey as Verifiable>::TDigest>,
     V::TSecretKey: Divisible,
@@ -54,7 +54,6 @@ where
     async fn sign_message(
         &self,
         message: &str,
-        index: usize,
     ) -> Result<
         SignatureShare<
             <<V::TSecretKey as Divisible>::TSecretKeyShare as Signable>::TSignatureShare,
@@ -63,7 +62,7 @@ where
     > {
         let secret_key_share = self
             .secret_key_share_repo
-            .load(index)
+            .load()
             .await
             .map_err(|_| KeyServiceError::FailedLoadSecretKeyShare)?;
 

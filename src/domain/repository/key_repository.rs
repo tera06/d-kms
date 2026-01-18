@@ -8,12 +8,11 @@ pub trait PublicKeyStore {
 }
 
 pub trait SecretKeyShareStore {
-    type SecretKeyShare;
-    type Error: std::error::Error + Send + Sync + 'static;
+    type TSecretKeyShare;
+    type TError: std::error::Error + Send + Sync + 'static;
     async fn save(
         &self,
-        secret_key_share: &SecretKeyShare<Self::SecretKeyShare>,
-    ) -> Result<(), Self::Error>;
-    async fn load(&self, index: usize)
-    -> Result<SecretKeyShare<Self::SecretKeyShare>, Self::Error>;
+        secret_key_share: &SecretKeyShare<Self::TSecretKeyShare>,
+    ) -> Result<(), Self::TError>;
+    async fn load(&self) -> Result<SecretKeyShare<Self::TSecretKeyShare>, Self::TError>;
 }
