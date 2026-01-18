@@ -5,7 +5,7 @@ use crate::domain::{
         key::{CombineSignatureShares, Divisible, PublicKey, SecretKey, Signable, Verifiable},
         signature::{Digest, SignatureShare},
     },
-    repository::key_repository::{PublicKeyRepository, SecretKeyShareRepository},
+    repository::key_repository::{PublicKeyStore, SecretKeyShareStore},
 };
 
 struct KeyService<T, U, V, W> {
@@ -17,8 +17,8 @@ struct KeyService<T, U, V, W> {
 
 impl<T, U, V, W> KeyService<T, U, V, W>
 where
-    T: PublicKeyRepository<TPublicKey = V::TPublicKey>,
-    U: SecretKeyShareRepository<SecretKeyShare = <V::TSecretKey as Divisible>::TSecretKeyShare>,
+    T: PublicKeyStore<TPublicKey = V::TPublicKey>,
+    U: SecretKeyShareStore<SecretKeyShare = <V::TSecretKey as Divisible>::TSecretKeyShare>,
     V: GenerateKey,
     W: GenerateDigest<TDigest = <V::TPublicKey as Verifiable>::TDigest>,
     V::TSecretKey: Divisible,
