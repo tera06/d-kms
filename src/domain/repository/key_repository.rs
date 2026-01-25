@@ -14,5 +14,8 @@ pub trait SecretKeyShareStore {
         &self,
         secret_key_share: &SecretKeyShare<Self::TSecretKeyShare>,
     ) -> Result<(), Self::TError>;
-    async fn load(&self) -> Result<SecretKeyShare<Self::TSecretKeyShare>, Self::TError>;
+    async fn load(
+        &self,
+        index: usize,
+    ) -> Result<SecretKeyShare<Self::TSecretKeyShare>, Self::TError>;
 }

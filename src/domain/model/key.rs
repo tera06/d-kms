@@ -1,6 +1,6 @@
 use crate::domain::model::signature::{Digest, Signature, SignatureShare};
 pub struct PublicKey<T> {
-    public_key: T,
+    pub public_key: T,
 }
 
 pub struct SecretKey<T> {
@@ -9,8 +9,8 @@ pub struct SecretKey<T> {
     secret_key: T,
 }
 pub struct SecretKeyShare<T> {
-    index: usize,
-    secret_key_share: T,
+    pub index: usize,
+    pub secret_key_share: T,
 }
 pub trait Verifiable {
     type TSignature;

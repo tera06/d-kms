@@ -53,6 +53,7 @@ where
 
     async fn sign_message(
         &self,
+        index: usize,
         message: &str,
     ) -> Result<
         SignatureShare<
@@ -62,7 +63,7 @@ where
     > {
         let secret_key_share = self
             .secret_key_share_repo
-            .load()
+            .load(index)
             .await
             .map_err(|_| KeyServiceError::FailedLoadSecretKeyShare)?;
 
