@@ -19,12 +19,12 @@ pub struct SignResponse {
 
 #[derive(NetworkBehaviour)]
 #[behaviour(to_swarm = "MyBehaviourEvent")]
-struct MyBehaviour {
-    req_res: request_response::json::Behaviour<SignRequest, SignResponse>,
-    mdns: mdns::tokio::Behaviour,
+pub struct MyBehaviour {
+    pub req_res: request_response::json::Behaviour<SignRequest, SignResponse>,
+    pub mdns: mdns::tokio::Behaviour,
 }
 
-enum MyBehaviourEvent {
+pub enum MyBehaviourEvent {
     ReqRes(request_response::Event<SignRequest, SignResponse>),
     Mdns(mdns::Event),
 }

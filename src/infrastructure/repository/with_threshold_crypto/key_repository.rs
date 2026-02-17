@@ -13,7 +13,7 @@ use crate::domain::{
     model::key::{PublicKey, SecretKeyShare},
     repository::key_repository::{PublicKeyStore, SecretKeyShareStore},
 };
-struct PublicKeyRepository {
+pub struct PublicKeyRepository {
     file_path: String,
     crypter: Crypter,
 }
@@ -76,7 +76,7 @@ enum PublicKeyRepositoryError {
     #[error("Failed to deserialize")]
     FailedDeserialize,
 }
-struct SecretKeyShareRepository {
+pub struct SecretKeyShareRepository {
     file_path: String,
     crypter: Crypter,
 }

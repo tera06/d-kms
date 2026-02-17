@@ -8,7 +8,7 @@ use crate::domain::{
     repository::key_repository::{PublicKeyStore, SecretKeyShareStore},
 };
 
-struct KeyService<T, U, V, W> {
+pub struct KeyService<T, U, V, W> {
     public_key_repo: T,
     secret_key_share_repo: U,
     key_generator: V,
@@ -51,7 +51,7 @@ where
         Ok(())
     }
 
-    async fn sign_message(
+    pub async fn sign_message(
         &self,
         index: usize,
         message: &str,
@@ -79,7 +79,7 @@ where
         Ok(signature_share)
     }
 
-    async fn verify_signature(
+    pub async fn verify_signature(
         &self,
         signature_shares: &Vec<
             SignatureShare<<V::TPublicKey as CombineSignatureShares>::TSignatureShare>,
