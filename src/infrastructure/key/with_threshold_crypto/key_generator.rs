@@ -7,7 +7,7 @@ use crate::{
     domain::model::key::{PublicKey, SecretKey},
 };
 
-struct KeyGenerator;
+pub struct KeyGenerator;
 
 impl GenerateKey for KeyGenerator {
     type TError = KeyGeneratorError;

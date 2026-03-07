@@ -3,7 +3,7 @@ use thiserror::Error;
 
 use crate::app::service::key_service::GenerateDigest;
 
-struct DigestGenarator;
+pub struct DigestGenarator;
 
 impl GenerateDigest for DigestGenarator {
     type TError = DigestGenaratorError;

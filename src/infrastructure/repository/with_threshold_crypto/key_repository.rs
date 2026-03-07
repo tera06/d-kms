@@ -18,6 +18,12 @@ pub struct PublicKeyRepository {
     crypter: Crypter,
 }
 
+impl PublicKeyRepository {
+    pub fn new(file_path: String, crypter: Crypter) -> Self {
+        Self { file_path, crypter }
+    }
+}
+
 impl PublicKeyStore for PublicKeyRepository {
     type TPublicKey = threshold_crypto::PublicKeySet;
 
@@ -76,12 +82,17 @@ enum PublicKeyRepositoryError {
     #[error("Failed to deserialize")]
     FailedDeserialize,
 }
+
+#[derive(Clone)]
 pub struct SecretKeyShareRepository {
     file_path: String,
     crypter: Crypter,
 }
 
 impl SecretKeyShareRepository {
+    pub fn new(file_path: String, crypter: Crypter) -> Self {
+        Self { file_path, crypter }
+    }
     fn get_file_path_with_index(&self, index: usize) -> String {
         format!("{}-{}", self.file_path, index)
     }
@@ -150,7 +161,8 @@ enum SecretKeyShareRepositoryError {
     FailedDeserialize,
 }
 
-struct Crypter;
+#[derive(Clone)]
+pub struct Crypter;
 
 impl Crypter {
     fn load_master_key(&self) -> Result<Vec<u8>, CrypterError> {

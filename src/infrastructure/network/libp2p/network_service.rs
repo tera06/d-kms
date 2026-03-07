@@ -18,7 +18,7 @@ use uuid::Uuid;
 
 use crate::{
     app::service::{
-        key_service::{GenerateDigest, GenerateKey, KeyService},
+        key_service::{self, GenerateDigest, GenerateKey, KeyService},
         network_service::NetworkService,
     },
     domain::{
@@ -35,12 +35,21 @@ use crate::{
     },
 };
 
-struct P2pNetworkService<T, U, V, W> {
+pub struct P2pNetworkService<T, U, V, W> {
     secret_key_share_repo: SecretKeyShareRepository,
     key_service: KeyService<T, U, V, W>,
 }
 
 impl<T, U, V, W> P2pNetworkService<T, U, V, W> {
+    pub fn new(
+        secret_key_share_repo: SecretKeyShareRepository,
+        key_service: KeyService<T, U, V, W>,
+    ) -> Self {
+        Self {
+            secret_key_share_repo,
+            key_service,
+        }
+    }
     fn create_swarm(&self) -> Result<Swarm<MyBehaviour>, P2pNetworkServiceError> {
         let swarm = SwarmBuilder::with_new_identity()
             .with_tokio()

@@ -27,6 +27,20 @@ where
     <V::TSecretKey as Divisible>::TSecretKeyShare:
         Signable<TDigest = <V::TPublicKey as Verifiable>::TDigest>,
 {
+    pub fn new(
+        public_key_repo: T,
+        secret_key_share_repo: U,
+        key_generator: V,
+        digest_generator: W,
+    ) -> Self {
+        Self {
+            public_key_repo,
+            secret_key_share_repo,
+            key_generator,
+            digest_generator,
+        }
+    }
+
     async fn init_keys(&self, threshold: usize, num_divide: usize) -> Result<(), KeyServiceError> {
         let (public_key, secret_key) = self
             .key_generator
