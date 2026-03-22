@@ -1,7 +1,7 @@
 use thiserror::Error;
 
 use crate::{
-    app::service::{key_service::KeyService, key_service_factory::BuildKeyService},
+    logic::service::{key_service::KeyService, key_service_factory::BuildKeyService},
     platform::{
         key::with_threshold_crypto::key_generator::KeyGenerator,
         repository::with_threshold_crypto::key_repository::{
@@ -21,7 +21,7 @@ impl BuildKeyService<PublicKeyRepository, SecretKeyShareRepository, KeyGenerator
     fn build(
         &self,
     ) -> Result<
-        crate::app::service::key_service::KeyService<
+        crate::logic::service::key_service::KeyService<
             PublicKeyRepository,
             SecretKeyShareRepository,
             KeyGenerator,

@@ -17,16 +17,16 @@ use thiserror::Error;
 use uuid::Uuid;
 
 use crate::{
-    app::service::{
-        key_service::{GenerateDigest, GenerateKey, KeyService},
-        network_service::NetworkService,
-    },
     core::{
         model::{
             key::{CombineSignatureShares, Divisible, Signable, Verifiable},
             signature::SignatureShare,
         },
         repository::key_repository::{PublicKeyStore, SecretKeyShareStore},
+    },
+    logic::service::{
+        key_service::{GenerateDigest, GenerateKey, KeyService},
+        network_service::NetworkService,
     },
     platform::{
         repository::with_threshold_crypto::key_repository::SecretKeyShareRepository,

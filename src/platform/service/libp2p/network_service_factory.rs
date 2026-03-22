@@ -1,7 +1,7 @@
 use thiserror::Error;
 
 use crate::{
-    app::service::{key_service::KeyService, network_service_factory::BuildNetworkSerivce},
+    logic::service::{key_service::KeyService, network_service_factory::BuildNetworkSerivce},
     platform::{
         key::with_threshold_crypto::key_generator::KeyGenerator,
         repository::with_threshold_crypto::key_repository::{

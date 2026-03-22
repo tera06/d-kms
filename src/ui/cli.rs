@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
 
-use crate::app::runner::AppAction;
+use crate::logic::runner::AppAction;
 
 #[derive(Parser)]
 #[command(name = "dkms")]

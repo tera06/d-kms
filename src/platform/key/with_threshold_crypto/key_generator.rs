@@ -3,8 +3,8 @@ use thiserror::Error;
 use threshold_crypto::SecretKeySet;
 
 use crate::{
-    app::service::key_service::GenerateKey,
     core::model::key::{PublicKey, SecretKey},
+    logic::service::key_service::GenerateKey,
 };
 
 pub struct KeyGenerator;

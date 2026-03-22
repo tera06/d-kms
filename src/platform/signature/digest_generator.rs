@@ -1,7 +1,7 @@
 use sha2::{Digest, Sha256};
 use thiserror::Error;
 
-use crate::app::service::key_service::GenerateDigest;
+use crate::logic::service::key_service::GenerateDigest;
 
 pub struct DigestGenarator;
 

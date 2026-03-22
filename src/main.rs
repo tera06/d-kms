@@ -3,17 +3,13 @@ use std::env;
 use anyhow::Result;
 use clap::Parser;
 
-use crate::app::runner;
+use crate::logic::runner;
 use crate::ui::cli;
 
-mod app;
-mod domain;
-mod encryption;
-mod key;
-mod network;
-mod types;
+mod core;
+mod logic;
+mod platform;
 mod ui;
-
 #[tokio::main]
 async fn main() -> Result<()> {
     if env::var("RUST_LOG").is_err() {
