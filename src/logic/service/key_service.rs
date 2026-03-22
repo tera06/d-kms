@@ -41,7 +41,11 @@ where
         }
     }
 
-    async fn init_keys(&self, threshold: usize, num_divide: usize) -> Result<(), KeyServiceError> {
+    pub async fn init_keys(
+        &self,
+        threshold: usize,
+        num_divide: usize,
+    ) -> Result<(), KeyServiceError> {
         let (public_key, secret_key) = self
             .key_generator
             .generate_keys(threshold, num_divide)
@@ -124,7 +128,7 @@ where
 }
 
 #[derive(Error, Debug)]
-enum KeyServiceError {
+pub enum KeyServiceError {
     #[error("Failed to generate keys")]
     FailedGenerateKeys,
 

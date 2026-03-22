@@ -11,7 +11,7 @@ use crate::{
     },
 };
 
-struct KeyServiceFactory;
+pub struct KeyServiceFactory;
 
 impl BuildKeyService<PublicKeyRepository, SecretKeyShareRepository, KeyGenerator, DigestGenarator>
     for KeyServiceFactory
@@ -50,4 +50,4 @@ impl BuildKeyService<PublicKeyRepository, SecretKeyShareRepository, KeyGenerator
     }
 }
 #[derive(Debug, Error)]
-enum KeyServiceFactoryError {}
+pub enum KeyServiceFactoryError {}

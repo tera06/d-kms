@@ -49,7 +49,7 @@ impl CombineSignatureShares for threshold_crypto::PublicKeySet {
 }
 
 #[derive(Error, Debug)]
-enum PublicKeySetError {
+pub enum PublicKeySetError {
     #[error("Failed to combine signature")]
     FailedCombineSignature,
 }

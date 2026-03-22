@@ -1,4 +1,4 @@
-use crate::app::service::network_service::NetworkService;
+use crate::logic::service::network_service::NetworkService;
 
 pub trait BuildNetworkSerivce {
     type TError: std::error::Error;

@@ -40,7 +40,7 @@ impl GenerateKey for KeyGenerator {
 }
 
 #[derive(Error, Debug)]
-enum KeyGeneratorError {
+pub enum KeyGeneratorError {
     #[error("Failed to generate secret key")]
     FailedGenerateSecretKey,
 }

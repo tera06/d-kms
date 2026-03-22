@@ -12,7 +12,7 @@ use crate::{
     },
 };
 
-struct P2pNetworkServiceFactory;
+pub struct P2pNetworkServiceFactory;
 impl BuildNetworkSerivce for P2pNetworkServiceFactory {
     type TError = P2pNetworkServiceFactoryError;
 
@@ -47,4 +47,4 @@ impl BuildNetworkSerivce for P2pNetworkServiceFactory {
 }
 
 #[derive(Debug, Error)]
-enum P2pNetworkServiceFactoryError {}
+pub enum P2pNetworkServiceFactoryError {}

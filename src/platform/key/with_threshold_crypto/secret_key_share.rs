@@ -22,4 +22,4 @@ impl Signable for threshold_crypto::SecretKeyShare {
 }
 
 #[derive(Error, Debug)]
-enum SecretKeyShareError {}
+pub enum SecretKeyShareError {}

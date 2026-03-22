@@ -25,4 +25,4 @@ impl GenerateDigest for DigestGenarator {
 }
 
 #[derive(Error, Debug)]
-enum DigestGenaratorError {}
+pub enum DigestGenaratorError {}

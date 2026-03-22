@@ -1,4 +1,4 @@
-use crate::app::service::key_service::KeyService;
+use crate::logic::service::key_service::KeyService;
 
 pub trait BuildKeyService<T, U, V, W> {
     type TError;

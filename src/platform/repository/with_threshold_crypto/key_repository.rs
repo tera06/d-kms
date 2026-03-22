@@ -68,7 +68,7 @@ impl PublicKeyStore for PublicKeyRepository {
 }
 
 #[derive(Error, Debug)]
-enum PublicKeyRepositoryError {
+pub enum PublicKeyRepositoryError {
     #[error("Failed to serialize")]
     FailedSerialize,
     #[error("Failed to encrypt public key")]
@@ -145,7 +145,7 @@ impl SecretKeyShareStore for SecretKeyShareRepository {
 }
 
 #[derive(Error, Debug)]
-enum SecretKeyShareRepositoryError {
+pub enum SecretKeyShareRepositoryError {
     #[error("Failed to serialize")]
     FailedSerialize,
     #[error("Failed to encrypt secret key share")]

@@ -3,8 +3,8 @@ use std::env;
 use anyhow::Result;
 use clap::Parser;
 
-use crate::logic::runner;
 use crate::ui::cli;
+use crate::ui::runner;
 
 mod core;
 mod logic;

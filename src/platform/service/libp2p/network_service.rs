@@ -341,7 +341,7 @@ where
 }
 
 #[derive(Error, Debug)]
-enum P2pNetworkServiceError {
+pub enum P2pNetworkServiceError {
     #[error("Failed to build swarm")]
     FailedBuildSwarm,
     #[error("Failed to parse address")]
