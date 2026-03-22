@@ -2,7 +2,7 @@ use thiserror::Error;
 
 use crate::{
     app::service::{key_service::KeyService, key_service_factory::BuildKeyService},
-    infrastructure::{
+    platform::{
         key::with_threshold_crypto::key_generator::KeyGenerator,
         repository::with_threshold_crypto::key_repository::{
             Crypter, PublicKeyRepository, SecretKeyShareRepository,
@@ -13,14 +13,8 @@ use crate::{
 
 struct KeyServiceFactory;
 
-// T, U, V, W を具体的な型名に置き換えます
-impl
-    BuildKeyService<
-        PublicKeyRepository,
-        SecretKeyShareRepository,
-        KeyGenerator,
-        DigestGenarator, // タイポは元のコードに合わせていますが適宜修正してください
-    > for KeyServiceFactory
+impl BuildKeyService<PublicKeyRepository, SecretKeyShareRepository, KeyGenerator, DigestGenarator>
+    for KeyServiceFactory
 {
     type TError = KeyServiceFactoryError;
 

@@ -28,7 +28,7 @@ use crate::{
         },
         repository::key_repository::{PublicKeyStore, SecretKeyShareStore},
     },
-    infrastructure::{
+    platform::{
         repository::with_threshold_crypto::key_repository::SecretKeyShareRepository,
         service::libp2p::behaviour::{MyBehaviour, MyBehaviourEvent, SignRequest, SignResponse},
     },
