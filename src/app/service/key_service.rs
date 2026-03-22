@@ -1,6 +1,6 @@
 use thiserror::Error;
 
-use crate::domain::{
+use crate::core::{
     model::{
         key::{CombineSignatureShares, Divisible, PublicKey, SecretKey, Signable, Verifiable},
         signature::{Digest, SignatureShare},

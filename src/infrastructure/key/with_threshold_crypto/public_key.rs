@@ -1,6 +1,6 @@
 use thiserror::Error;
 
-use crate::domain::model::{
+use crate::core::model::{
     key::{CombineSignatureShares, Verifiable},
     signature::Signature,
 };
@@ -14,8 +14,8 @@ impl Verifiable for threshold_crypto::PublicKeySet {
 
     fn verify(
         &self,
-        signature: &crate::domain::model::signature::Signature<Self::TSignature>,
-        digest: &crate::domain::model::signature::Digest<Self::TDigest>,
+        signature: &crate::core::model::signature::Signature<Self::TSignature>,
+        digest: &crate::core::model::signature::Digest<Self::TDigest>,
     ) -> Result<bool, Self::TError> {
         let public_key = self.public_key();
         let is_valid = public_key.verify(&signature.signature, &digest.digest);
@@ -33,9 +33,9 @@ impl CombineSignatureShares for threshold_crypto::PublicKeySet {
     fn combine_signature_shares(
         &self,
         signature_shares: &Vec<
-            crate::domain::model::signature::SignatureShare<Self::TSignatureShare>,
+            crate::core::model::signature::SignatureShare<Self::TSignatureShare>,
         >,
-    ) -> Result<crate::domain::model::signature::Signature<Self::TSignature>, Self::TError> {
+    ) -> Result<crate::core::model::signature::Signature<Self::TSignature>, Self::TError> {
         let shares_for_combine = signature_shares
             .iter()
             .map(|s| (s.index, &s.signature_share));

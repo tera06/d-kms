@@ -1,4 +1,4 @@
-use crate::domain::model::key::{PublicKey, SecretKeyShare};
+use crate::core::model::key::{PublicKey, SecretKeyShare};
 
 pub trait PublicKeyStore {
     type TPublicKey;

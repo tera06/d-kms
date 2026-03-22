@@ -1,4 +1,4 @@
-use crate::domain::model::signature::{Digest, Signature, SignatureShare};
+use crate::core::model::signature::{Digest, Signature, SignatureShare};
 pub struct PublicKey<T> {
     pub public_key: T,
 }

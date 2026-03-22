@@ -1,6 +1,6 @@
 use thiserror::Error;
 
-use crate::domain::model::key::{Divisible, SecretKeyShare};
+use crate::core::model::key::{Divisible, SecretKeyShare};
 
 impl Divisible for threshold_crypto::SecretKeySet {
     type TSecretKeyShare = threshold_crypto::SecretKeyShare;
@@ -10,7 +10,7 @@ impl Divisible for threshold_crypto::SecretKeySet {
     fn divide(
         &self,
         num_divide: usize,
-    ) -> Result<Vec<crate::domain::model::key::SecretKeyShare<Self::TSecretKeyShare>>, Self::TError>
+    ) -> Result<Vec<crate::core::model::key::SecretKeyShare<Self::TSecretKeyShare>>, Self::TError>
     {
         let mut secret_key_shares = Vec::new();
 

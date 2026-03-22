@@ -18,10 +18,10 @@ use uuid::Uuid;
 
 use crate::{
     app::service::{
-        key_service::{self, GenerateDigest, GenerateKey, KeyService},
+        key_service::{GenerateDigest, GenerateKey, KeyService},
         network_service::NetworkService,
     },
-    domain::{
+    core::{
         model::{
             key::{CombineSignatureShares, Divisible, Signable, Verifiable},
             signature::SignatureShare,
@@ -31,7 +31,6 @@ use crate::{
     infrastructure::{
         repository::with_threshold_crypto::key_repository::SecretKeyShareRepository,
         service::libp2p::behaviour::{MyBehaviour, MyBehaviourEvent, SignRequest, SignResponse},
-        signature,
     },
 };
 

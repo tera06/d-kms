@@ -9,7 +9,7 @@ use base64::{Engine, engine::general_purpose};
 use thiserror::Error;
 use threshold_crypto::serde_impl::SerdeSecret;
 
-use crate::domain::{
+use crate::core::{
     model::key::{PublicKey, SecretKeyShare},
     repository::key_repository::{PublicKeyStore, SecretKeyShareStore},
 };
@@ -31,7 +31,7 @@ impl PublicKeyStore for PublicKeyRepository {
 
     async fn save(
         &self,
-        public_key: &crate::domain::model::key::PublicKey<Self::TPublicKey>,
+        public_key: &crate::core::model::key::PublicKey<Self::TPublicKey>,
     ) -> Result<(), Self::TError> {
         let public_key_bytes = bincode::serialize(&public_key.public_key)
             .map_err(|_| PublicKeyRepositoryError::FailedSerialize)?;
@@ -49,7 +49,7 @@ impl PublicKeyStore for PublicKeyRepository {
 
     async fn load(
         &self,
-    ) -> Result<crate::domain::model::key::PublicKey<Self::TPublicKey>, Self::TError> {
+    ) -> Result<crate::core::model::key::PublicKey<Self::TPublicKey>, Self::TError> {
         let file_path = Path::new(&self.file_path);
         let encrypted_pub_key_bytes =
             fs::read(file_path).map_err(|_| PublicKeyRepositoryError::FailedReadRepoFile)?;
@@ -104,7 +104,7 @@ impl SecretKeyShareStore for SecretKeyShareRepository {
 
     async fn save(
         &self,
-        secret_key_share: &crate::domain::model::key::SecretKeyShare<Self::TSecretKeyShare>,
+        secret_key_share: &crate::core::model::key::SecretKeyShare<Self::TSecretKeyShare>,
     ) -> Result<(), Self::TError> {
         let serde_secret_key_share = SerdeSecret(&secret_key_share.secret_key_share);
         let secret_key_share_bytes = bincode::serialize(&serde_secret_key_share)
@@ -124,8 +124,7 @@ impl SecretKeyShareStore for SecretKeyShareRepository {
     async fn load(
         &self,
         index: usize,
-    ) -> Result<crate::domain::model::key::SecretKeyShare<Self::TSecretKeyShare>, Self::TError>
-    {
+    ) -> Result<crate::core::model::key::SecretKeyShare<Self::TSecretKeyShare>, Self::TError> {
         let file_path = self.get_file_path_with_index(index);
         let file_path = Path::new(&file_path);
         let encrypted_serde_secret_key_share_bytes =

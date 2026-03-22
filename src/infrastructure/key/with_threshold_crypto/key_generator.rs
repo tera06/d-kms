@@ -1,10 +1,10 @@
 use rand::thread_rng;
 use thiserror::Error;
-use threshold_crypto::{PublicKeySet, SecretKeySet};
+use threshold_crypto::SecretKeySet;
 
 use crate::{
     app::service::key_service::GenerateKey,
-    domain::model::key::{PublicKey, SecretKey},
+    core::model::key::{PublicKey, SecretKey},
 };
 
 pub struct KeyGenerator;
@@ -22,8 +22,8 @@ impl GenerateKey for KeyGenerator {
         num_divide: usize,
     ) -> Result<
         (
-            crate::domain::model::key::PublicKey<Self::TPublicKey>,
-            crate::domain::model::key::SecretKey<Self::TSecretKey>,
+            crate::core::model::key::PublicKey<Self::TPublicKey>,
+            crate::core::model::key::SecretKey<Self::TSecretKey>,
         ),
         Self::TError,
     > {
