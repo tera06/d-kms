@@ -4,10 +4,10 @@ use crate::{
     app::service::{key_service::KeyService, network_service_factory::BuildNetworkSerivce},
     infrastructure::{
         key::with_threshold_crypto::key_generator::KeyGenerator,
-        network::libp2p::network_service::P2pNetworkService,
         repository::with_threshold_crypto::key_repository::{
             Crypter, PublicKeyRepository, SecretKeyShareRepository,
         },
+        service::libp2p::network_service::P2pNetworkService,
         signature::digest_generator::DigestGenarator,
     },
 };
