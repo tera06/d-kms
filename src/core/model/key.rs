@@ -4,7 +4,6 @@ pub struct PublicKey<T> {
 }
 
 pub struct SecretKey<T> {
-    threshold: usize,
     num_key_shares: usize,
     secret_key: T,
 }
@@ -87,12 +86,14 @@ where
     T: Divisible,
 {
     pub fn new(threshold: usize, num_key_shares: usize, secret_key: T) -> Option<Self> {
+        if threshold == 0 || num_key_shares == 0 {
+            return None;
+        }
         if threshold > num_key_shares {
             return None;
         }
 
         Some(Self {
-            threshold,
             num_key_shares,
             secret_key,
         })
@@ -118,5 +119,163 @@ where
         digest: &Digest<T::TDigest>,
     ) -> Result<SignatureShare<T::TSignatureShare>, T::TError> {
         self.secret_key_share.sign(self.index, &digest)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::core::model::signature::{Digest, Signature, SignatureShare};
+    use mockall::{mock, predicate::*};
+    use thiserror::Error;
+
+    #[derive(Error, Debug)]
+    pub enum MockError {}
+    mock! {
+        pub VerifiableCombinableKey{}
+
+        impl Verifiable for VerifiableCombinableKey {
+            type TSignature = u32;
+            type TDigest = u32;
+            type TError = MockError;
+
+            fn verify(
+                &self,
+                signature: &Signature<u32>,
+                digest: &Digest<u32>,
+            ) -> Result<bool, MockError>;
+        }
+
+        impl CombineSignatureShares for VerifiableCombinableKey {
+            type TSignatureShare = u32;
+            type TSignature = u32;
+            type TError = MockError;
+
+            fn combine_signature_shares(
+                &self,
+                signature_shares: &Vec<SignatureShare<u32>>,
+            ) -> Result<Signature<u32>, MockError>;
+        }
+    }
+
+    mock! {
+        pub DivisibleKey{}
+
+        impl Divisible for DivisibleKey {
+            type TSecretKeyShare = MockSignableShare;
+            type TError = MockError;
+
+            fn divide(
+                &self,
+                num_divide: usize,
+            ) -> Result<Vec<SecretKeyShare<MockSignableShare>>, MockError>;
+        }
+    }
+
+    mock! {
+        pub SignableShare{}
+
+        impl Signable for SignableShare {
+            type TDigest = u32;
+            type TSignatureShare = u32;
+            type TError = MockError;
+
+            fn sign(
+                &self,
+                index: usize,
+                digest: &Digest<u32>,
+            ) -> Result<SignatureShare<u32>, MockError>;
+        }
+    }
+
+    #[test]
+    fn test_public_key_verify_call_verify() {
+        let mut mock = MockVerifiableCombinableKey::new();
+        mock.expect_verify().times(1).returning(|_, _| Ok(true));
+
+        let public_key = PublicKey::new(mock);
+        let signature = Signature::new(10);
+        let digest = Digest::new(10);
+
+        let result = public_key.verify(&signature, &digest).unwrap();
+        assert!(result);
+    }
+
+    #[test]
+    fn test_public_key_combine_signature_shares_call_combine_signature_shares() {
+        let mut mock = MockVerifiableCombinableKey::new();
+        mock.expect_combine_signature_shares()
+            .times(1)
+            .returning(|_| Ok(Signature::new(10)));
+
+        let public_key = PublicKey::new(mock);
+
+        let signature_shares = vec![SignatureShare::new(1, 10), SignatureShare::new(2, 10)];
+        let result = public_key
+            .combine_signature_shares(&signature_shares)
+            .unwrap();
+        assert_eq!(result.signature, 10)
+    }
+    #[test]
+    fn test_secret_key_created_in_threshold_less_num_key_shares() {
+        let mock = MockDivisibleKey::new();
+        let secret_key = SecretKey::new(1, 2, mock);
+        assert!(secret_key.is_some());
+    }
+    #[test]
+    fn test_secret_key_created_in_threshold_equal_num_key_shares() {
+        let mock = MockDivisibleKey::new();
+        let secret_key = SecretKey::new(1, 1, mock);
+        assert!(secret_key.is_some());
+    }
+
+    #[test]
+    fn test_secret_key_not_created_in_threshold_is_zero() {
+        let mock = MockDivisibleKey::new();
+        let secret_key = SecretKey::new(0, 1, mock);
+        assert!(secret_key.is_none());
+    }
+    #[test]
+    fn test_secret_key_not_created_in_num_key_shares_is_zero() {
+        let mock = MockDivisibleKey::new();
+        let secret_key = SecretKey::new(1, 0, mock);
+        assert!(secret_key.is_none());
+    }
+
+    #[test]
+    fn test_secret_key_not_created_in_threshold_greater_num_key_shares() {
+        let mock = MockDivisibleKey::new();
+        let secret_key = SecretKey::new(2, 1, mock);
+        assert!(secret_key.is_none());
+    }
+
+    #[test]
+    fn test_secret_key_divide_call_divide() {
+        let mut mock = MockDivisibleKey::new();
+        mock.expect_divide().times(1).returning(|_| {
+            Ok(vec![
+                SecretKeyShare::new(1, MockSignableShare::new()),
+                SecretKeyShare::new(2, MockSignableShare::new()),
+            ])
+        });
+
+        let secret_key = SecretKey::new(1, 2, mock).unwrap();
+        let result = secret_key.divide().unwrap();
+        assert_eq!(result[0].index, 1);
+        assert_eq!(result[1].index, 2);
+    }
+
+    #[test]
+    fn test_secret_key_share_sign_call_sign() {
+        let mut mock = MockSignableShare::new();
+        mock.expect_sign()
+            .times(1)
+            .returning(|_, _| Ok(SignatureShare::new(1, 100)));
+
+        let secret_key_share = SecretKeyShare::new(1, mock);
+        let digest = Digest::new(100);
+        let result = secret_key_share.sign(&digest).unwrap();
+        assert_eq!(result.index, 1);
+        assert_eq!(result.signature_share, 100);
     }
 }
