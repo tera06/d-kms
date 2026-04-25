@@ -129,8 +129,17 @@ mod tests {
     use mockall::{mock, predicate::*};
     use thiserror::Error;
 
-    #[derive(Error, Debug)]
-    pub enum MockError {}
+    #[derive(Error, Debug, PartialEq)]
+    pub enum MockError {
+        #[error("Failed to verify")]
+        FailedVerify,
+        #[error("Failed to combine signature shares")]
+        FailedCombineSignatureShares,
+        #[error("Failed to divide")]
+        FailedDivide,
+        #[error("Failed to sign")]
+        FailedSign,
+    }
     mock! {
         pub VerifiableCombinableKey{}
 
@@ -202,6 +211,23 @@ mod tests {
     }
 
     #[test]
+    fn test_public_key_verify_return_error_if_internal_verify_failed() {
+        let mut mock = MockVerifiableCombinableKey::new();
+        mock.expect_verify()
+            .times(1)
+            .returning(|_, _| Err(MockError::FailedVerify));
+
+        let public_key = PublicKey::new(mock);
+        let signature = Signature::new(10);
+        let digest = Digest::new(10);
+
+        let result = public_key.verify(&signature, &digest);
+
+        let err = result.err().unwrap();
+        assert_eq!(err, MockError::FailedVerify);
+    }
+
+    #[test]
     fn test_public_key_combine_signature_shares_call_combine_signature_shares() {
         let mut mock = MockVerifiableCombinableKey::new();
         mock.expect_combine_signature_shares()
@@ -216,6 +242,24 @@ mod tests {
             .unwrap();
         assert_eq!(result.signature, 10)
     }
+
+    #[test]
+    fn test_public_key_combine_signature_shares_return_error_if_internal_combine_signature_shares_failed()
+     {
+        let mut mock = MockVerifiableCombinableKey::new();
+        mock.expect_combine_signature_shares()
+            .times(1)
+            .returning(|_| Err(MockError::FailedCombineSignatureShares));
+
+        let public_key = PublicKey::new(mock);
+
+        let signature_shares = vec![SignatureShare::new(1, 10), SignatureShare::new(2, 10)];
+        let result = public_key.combine_signature_shares(&signature_shares);
+        let err = result.err().unwrap();
+
+        assert_eq!(err, MockError::FailedCombineSignatureShares);
+    }
+
     #[test]
     fn test_secret_key_created_in_threshold_less_num_key_shares() {
         let mock = MockDivisibleKey::new();
@@ -266,6 +310,20 @@ mod tests {
     }
 
     #[test]
+    fn test_secret_key_divide_return_error_if_internal_divide_failed() {
+        let mut mock = MockDivisibleKey::new();
+        mock.expect_divide().times(1).returning(|_| {
+            return Err(MockError::FailedDivide);
+        });
+
+        let secret_key = SecretKey::new(1, 2, mock).unwrap();
+        let result = secret_key.divide();
+        let err = result.err().unwrap();
+
+        assert_eq!(err, MockError::FailedDivide);
+    }
+
+    #[test]
     fn test_secret_key_share_sign_call_sign() {
         let mut mock = MockSignableShare::new();
         mock.expect_sign()
@@ -277,5 +335,19 @@ mod tests {
         let result = secret_key_share.sign(&digest).unwrap();
         assert_eq!(result.index, 1);
         assert_eq!(result.signature_share, 100);
+    }
+
+    #[test]
+    fn test_secret_key_share_sign_return_error_if_internal_sign_failed() {
+        let mut mock = MockSignableShare::new();
+        mock.expect_sign()
+            .times(1)
+            .returning(|_, _| Err(MockError::FailedSign));
+        let secret_key_share = SecretKeyShare::new(1, mock);
+        let digest = Digest::new(100);
+        let result = secret_key_share.sign(&digest);
+
+        let err = result.err().unwrap();
+        assert_eq!(err, MockError::FailedSign);
     }
 }
